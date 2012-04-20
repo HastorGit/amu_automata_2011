@@ -531,4 +531,80 @@ public class TestNondeterministicAutomatonByThompsonApproach extends TestCase {
         assertFalse(automaton.accepts("c"));
         assertFalse(automaton.accepts("d"));
     }
+    
+     /**
+    * Test na automat akceptujący numery pokojów w części B.
+    */
+   public final void testRoomsOnFloorB() {
+       final AutomatonSpecification spec = new NaiveAutomatonSpecification();
+
+       State q0 = spec.addState();
+       State q1 = spec.addState();
+       State q2 = spec.addState();
+       State q3 = spec.addState();
+       State q4 = spec.addState();
+       State q5 = spec.addState();
+       State q6 = spec.addState();
+       State q7 = spec.addState();
+       State q8 = spec.addState();
+       State q9 = spec.addState();
+       State q10 = spec.addState();
+
+       TransitionLabel big = new CharRangeTransitionLabel('0', '9');
+       TransitionLabel medium = new CharRangeTransitionLabel('1', '6');
+       TransitionLabel small = new CharRangeTransitionLabel('0', '7');
+
+       spec.addTransition(q0, q1, new CharTransitionLabel('B'));
+       spec.addTransition(q1, q2, new CharRangeTransitionLabel('1','4'));
+       spec.addTransition(q2, q3, new CharTransitionLabel('-'));
+       spec.addTransition(q3, q4, new CharTransitionLabel('1'));
+       spec.addTransition(q3, q5, new CharTransitionLabel('2'));
+       spec.addTransition(q3, q6, new CharTransitionLabel('3'));
+       spec.addTransition(q3, q7, new CharTransitionLabel('4'));
+       spec.addTransition(q3, q8, new CharRangeTransitionLabel('5', '9'));
+       spec.addTransition(q3, q8, big);
+       spec.addTransition(q4, q8, big);
+       spec.addTransition(q5, q8, big);
+       spec.addTransition(q6, q8, big);
+       spec.addTransition(q7, q8, small);
+       spec.addTransition(q1, q9, new CharTransitionLabel('0'));
+       spec.addTransition(q9, q10, new CharTransitionLabel('-'));
+       spec.addTransition(q10, q8, medium);
+
+       spec.markAsInitial(q0);
+       spec.markAsFinal(q8);
+       spec.markAsFinal(q4);
+       spec.markAsFinal(q5);
+       spec.markAsFinal(q6);
+       spec.markAsFinal(q7);
+
+       final NondeterministicAutomatonByThompsonApproach automaton =
+               new NondeterministicAutomatonByThompsonApproach(spec);
+
+       assertTrue(automaton.accepts("B1-1"));
+       assertTrue(automaton.accepts("B1-10"));
+       assertTrue(automaton.accepts("B1-15"));
+       assertTrue(automaton.accepts("B1-19"));
+       assertTrue(automaton.accepts("B1-2"));
+       assertTrue(automaton.accepts("B1-21"));
+       assertTrue(automaton.accepts("B1-20"));
+       assertTrue(automaton.accepts("B1-25"));
+       assertTrue(automaton.accepts("B1-29"));
+       assertTrue(automaton.accepts("B1-3"));
+       assertTrue(automaton.accepts("B1-31"));
+       assertTrue(automaton.accepts("B4-39"));
+       assertTrue(automaton.accepts("B1-47"));
+       assertTrue(automaton.accepts("B3-3"));
+       assertTrue(automaton.accepts("B0-6"));
+       assertTrue(automaton.accepts("B0-4"));
+       assertTrue(automaton.accepts("B1-9"));
+       assertTrue(automaton.accepts("B4-47"));
+
+       assertFalse(automaton.accepts("aa"));
+       assertFalse(automaton.accepts("baba"));
+       assertFalse(automaton.accepts("b2-99"));
+       assertFalse(automaton.accepts("b2-2"));
+       assertFalse(automaton.accepts("UWIELBIAM-AUTOMATY"));
+       assertFalse(automaton.accepts("B0-BB"));
+   }
 }
